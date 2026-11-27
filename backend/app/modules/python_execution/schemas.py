@@ -14,3 +14,4 @@ class PythonSandboxResult(BaseModel):
     status: str
     stdout: Optional[str] = None
     stderr: Optional[str] = None
+    task_id: Optional[str] = None

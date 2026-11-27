@@ -14,3 +14,4 @@ class SQLSandboxResult(BaseModel):
     status: str
     rows: list[dict] = []
     error_message: Optional[str] = None
+    task_id: Optional[str] = None

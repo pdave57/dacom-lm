@@ -21,6 +21,7 @@ from app.modules.python_execution.router import router as python_execution_route
 from app.modules.raids.router import router as raids_router
 from app.modules.roles.router import router as roles_router
 from app.modules.sql_execution.router import router as sql_execution_router
+from app.modules.tasks.router import router as tasks_router
 from app.modules.trials.router import router as trials_router
 from app.modules.users.router import router as users_router
 
@@ -68,6 +69,7 @@ def create_application() -> FastAPI:
     api_v1.include_router(certification_router)
     api_v1.include_router(analytics_router)
     api_v1.include_router(administration_router)
+    api_v1.include_router(tasks_router)
 
     app.include_router(api_v1)
     return app

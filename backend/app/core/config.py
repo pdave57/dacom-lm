@@ -31,6 +31,9 @@ class Settings(BaseSettings):
     LLM_API_KEY: str = ""
     LLM_MODEL: str = "gpt-4o-mini"
     EMBEDDING_MODEL: str = "text-embedding-3-small"
+    TTS_PROVIDER: str = "openai"
+    TTS_MODEL: str = "gpt-4o-mini-tts"
+    TTS_VOICE: str = "alloy"
 
     GITEA_BASE_URL: str = "http://localhost:3000"
     GITEA_API_TOKEN: str = ""

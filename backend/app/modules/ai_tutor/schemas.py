@@ -14,6 +14,7 @@ class LessonChatResponse(BaseModel):
     conversation_id: uuid.UUID
     answer: str
     references: list[str] = []
+    task_id: Optional[str] = None
 
 
 class AIConversationResponse(BaseModel):

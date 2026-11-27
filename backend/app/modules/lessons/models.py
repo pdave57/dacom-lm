@@ -39,6 +39,20 @@ class LessonVideo(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     duration_seconds: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
 
+class LessonAudio(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+    __tablename__ = "lesson_audios"
+
+    lesson_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("lessons.id", ondelete="CASCADE"), index=True
+    )
+    audio_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    voice: Mapped[str] = mapped_column(String(64), default="alloy", nullable=False)
+    language: Mapped[str] = mapped_column(String(32), default="en", nullable=False)
+    duration_seconds: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    status: Mapped[str] = mapped_column(String(32), default="queued", nullable=False)
+    source_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+
+
 class LessonResource(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "lesson_resources"
 

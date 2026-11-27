@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from fastapi import APIRouter, Depends
 
@@ -12,6 +13,7 @@ from app.modules.raids.schemas import (
 from app.modules.raids.service import RaidService
 from app.shared.enums import RoleEnum
 from app.shared.responses import MessageResponse
+from app.workers.tasks import evaluate_raid_submission, inspect_raid_submission
 
 router = APIRouter(prefix="/raids", tags=["Raids"])
 
@@ -37,20 +39,30 @@ def list_raid_submissions(
     return []
 
 
-@router.post("/submissions/{submission_id}/inspect", response_model=MessageResponse)
+@router.post("/submissions/{submission_id}/inspect")
 def trigger_raid_inspection(
     submission_id: uuid.UUID,
     current_user: CurrentUser = Depends(get_current_user),
-) -> MessageResponse:
-    return MessageResponse(message=f"Automated inspection queued for submission {submission_id}")
+) -> dict[str, Any]:
+    """Queue an automated inspection of a raid submission as a background job."""
+    task = inspect_raid_submission.delay(str(submission_id))
+    return {
+        "task_id": str(task.id),
+        "message": f"Automated inspection queued for submission {submission_id}",
+    }
 
 
-@router.post("/submissions/{submission_id}/review", response_model=MessageResponse)
+@router.post("/submissions/{submission_id}/review")
 def review_raid_submission(
     submission_id: uuid.UUID,
     payload: RaidReviewRequest,
     current_user: CurrentUser = Depends(
         require_roles(RoleEnum.PROJECT_EVALUATOR, RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN)
     ),
-) -> MessageResponse:
-    return MessageResponse(message=f"Review recorded for submission {submission_id}")
+) -> dict[str, Any]:
+    """Queue an evaluation of a raid submission as a background job."""
+    task = evaluate_raid_submission.delay(str(submission_id))
+    return {
+        "task_id": str(task.id),
+        "message": f"Evaluation queued for submission {submission_id}",
+    }
